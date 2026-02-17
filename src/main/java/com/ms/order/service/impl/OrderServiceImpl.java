@@ -37,6 +37,10 @@ public class OrderServiceImpl implements OrderService {
 		Order order = this.orderMapper.toEntity(orderRequest);
 		order.setStatus(OrderStatus.PENDING_STOCK);
 
+		order.getItems().stream().forEach(item -> {
+			item.setOrder(order);
+		});
+
 		try {
 
 			this.orderRepository.save(order);

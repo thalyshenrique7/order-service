@@ -2,13 +2,11 @@ package com.ms.order.infrastructure.messaging.event;
 
 import java.util.List;
 
-import com.ms.order.dto.OrderItemDTO;
-
 public class OrderCreatedEvent {
 
 	private Long orderId;
 
-	private List<OrderItemDTO> items;
+	private List<OrderItemCreatedEvent> items;
 
 	public Long getOrderId() {
 
@@ -20,12 +18,12 @@ public class OrderCreatedEvent {
 		this.orderId = orderId;
 	}
 
-	public List<OrderItemDTO> getItems() {
+	public List<OrderItemCreatedEvent> getItems() {
 
 		return items;
 	}
 
-	public void setItems(List<OrderItemDTO> items) {
+	public void setItems(List<OrderItemCreatedEvent> items) {
 
 		this.items = items;
 	}

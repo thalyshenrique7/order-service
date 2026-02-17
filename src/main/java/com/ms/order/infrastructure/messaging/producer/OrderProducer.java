@@ -7,21 +7,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.ms.order.domain.model.Order;
-import com.ms.order.dto.OrderItemDTO;
 import com.ms.order.infrastructure.messaging.event.OrderCreatedEvent;
-import com.ms.order.mapper.OrderItemMapper;
+import com.ms.order.infrastructure.messaging.event.OrderItemCreatedEvent;
+import com.ms.order.mapper.OrderItemCreatedEventMapper;
 
 @Component
 public class OrderProducer {
 
 	final RabbitTemplate rabbitTemplate;
 
-	final OrderItemMapper orderItemMapper;
+	final OrderItemCreatedEventMapper orderItemCreatedEventMapper;
 
-	public OrderProducer(RabbitTemplate rabbitTemplate, OrderItemMapper orderItemMapper) {
+	public OrderProducer(RabbitTemplate rabbitTemplate, OrderItemCreatedEventMapper orderItemCreatedEventMapper) {
 
 		this.rabbitTemplate = rabbitTemplate;
-		this.orderItemMapper = orderItemMapper;
+		this.orderItemCreatedEventMapper = orderItemCreatedEventMapper;
 	}
 
 	@Value("${broker.exchange.order}")
@@ -35,7 +35,7 @@ public class OrderProducer {
 		OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
 		orderCreatedEvent.setOrderId(order.getId());
 
-		List<OrderItemDTO> items = this.orderItemMapper.toOrderItemDtos(order.getItems());
+		List<OrderItemCreatedEvent> items = this.orderItemCreatedEventMapper.toOrderItemCreatedEvent(order.getItems());
 		orderCreatedEvent.setItems(items);
 
 		this.rabbitTemplate.convertAndSend(exchange, routingKey, orderCreatedEvent);
