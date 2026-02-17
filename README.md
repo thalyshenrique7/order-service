@@ -110,10 +110,7 @@ Este serviço:
 - Subir PostgreSQL
 - Subir RabbitMQ (ou utilizar CloudAMQP)
 - Configurar application.properties
-
-Executar:
-mvn spring-boot:run
+- Executar: mvn spring-boot:run
 
 > Autor: Thalys Henrique
 https://www.linkedin.com/in/thalyshenrique7/
-
