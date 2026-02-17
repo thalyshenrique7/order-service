@@ -24,10 +24,13 @@ public class OrderProducer {
 		this.orderItemMapper = orderItemMapper;
 	}
 
-	@Value(value = "${broker.queue.stock.name}")
+	@Value("${broker.exchange.order}")
+	private String exchange;
+
+	@Value("${broker.routing.order-created}")
 	private String routingKey;
 
-	public void publishMessageStock(Order order) {
+	public void publishOrderCreatedEvent(Order order) {
 
 		OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
 		orderCreatedEvent.setOrderId(order.getId());
@@ -35,6 +38,6 @@ public class OrderProducer {
 		List<OrderItemDTO> items = this.orderItemMapper.toOrderItemDtos(order.getItems());
 		orderCreatedEvent.setItems(items);
 
-		this.rabbitTemplate.convertAndSend("", routingKey, orderCreatedEvent);
+		this.rabbitTemplate.convertAndSend(exchange, routingKey, orderCreatedEvent);
 	}
 }

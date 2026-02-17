@@ -9,6 +9,7 @@ import com.ms.order.domain.model.Order;
 import com.ms.order.domain.repository.OrderRepository;
 import com.ms.order.dto.OrderRequestDTO;
 import com.ms.order.dto.OrderResponseDTO;
+import com.ms.order.enums.OrderStatus;
 import com.ms.order.infrastructure.messaging.producer.OrderProducer;
 import com.ms.order.mapper.OrderMapper;
 import com.ms.order.service.OrderService;
@@ -34,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
 	public OrderResponseDTO save(OrderRequestDTO orderRequest) {
 
 		Order order = this.orderMapper.toEntity(orderRequest);
+		order.setStatus(OrderStatus.PENDING_STOCK);
 
 		try {
 
@@ -43,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
 			throw new RuntimeException("Ocorreu um problema ao tentar efetuar o pedido.");
 		}
 
-		this.orderProducer.publishMessageStock(order);
+		this.orderProducer.publishOrderCreatedEvent(order);
 
 		OrderResponseDTO orderResponse = new OrderResponseDTO(order.getId(), order.getStatus(),
 				DESCRIPTION_ORDER_CREATED, Calendar.getInstance());
