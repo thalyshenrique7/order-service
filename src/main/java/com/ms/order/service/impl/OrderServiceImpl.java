@@ -1,5 +1,7 @@
 package com.ms.order.service.impl;
 
+import java.util.Calendar;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 		this.orderProducer.publishMessageStock(order);
 
 		OrderResponseDTO orderResponse = new OrderResponseDTO(order.getId(), order.getStatus(),
-				DESCRIPTION_ORDER_CREATED, order.getCreatedAt());
+				DESCRIPTION_ORDER_CREATED, Calendar.getInstance());
 
 		return orderResponse;
 	}

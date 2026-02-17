@@ -18,6 +18,6 @@ public abstract class OrderMapper extends Order implements Serializable {
 		super(Order.class);
 	}
 
-	public abstract Order toEntity(OrderRequestDTO orderRequest);
+	public abstract Order toEntity(OrderRequestDTO dto);
 
 }
