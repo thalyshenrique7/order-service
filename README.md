@@ -80,6 +80,40 @@ Payload
   "items": [...]
 }
 ```
+## Eventos Consumidos
+
+O Order Service consome os eventos de retorno do Stock Service
+
+Estoque Reservado
+---
+Exchange:
+- stock.exchange
+
+Routing Key:
+- stock.reserved
+
+Ação executada:
+- Atualiza o status do pedido para CONFIRMED
+
+Falha na Reserva de Estoque
+---
+Exchange:
+- stock.exchange
+
+Routing Key:
+- stock.failed
+
+Ação executada:
+- Atualiza o status do pedido para FAILED
+
+Estratégia de Retry
+---
+O serviço utiliza retry exponencial na escuta das mensagens:
+1s, 2s, 4s, 8s, 10s
+
+- Após 5 tentativas, a mensagem é encaminhada para Dead Letter Queue (DLQ)
+- Erros de regra de negócio não geram retry
+
 ## Configuração RabbitMQ
 
 Exemplo de propriedades:
