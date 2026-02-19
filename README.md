@@ -26,10 +26,7 @@ Ao criar um pedido, o serviço publica um evento `order.created` no RabbitMQ par
 Este serviço segue o padrão **Event Driven Architecture (EDA)**.
 
 ### Fluxo
-Client → Order Service → Banco de Dados
-↓
-RabbitMQ (order.created)
-
+Client → Order Service → Banco de Dados → RabbitMQ (order.created)
 
 ### Responsabilidades do Order Service
 
