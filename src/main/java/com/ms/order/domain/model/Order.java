@@ -32,7 +32,7 @@ public class Order implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "total_amount")
+	@Column(name = "total_amount_items")
 	private BigDecimal totalAmountItems = BigDecimal.ZERO;
 
 	@Column(nullable = false)
@@ -41,6 +41,10 @@ public class Order implements Serializable {
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> items;
+
+	public Order() {
+
+	}
 
 	public Order(Class<Order> classOrder) {
 

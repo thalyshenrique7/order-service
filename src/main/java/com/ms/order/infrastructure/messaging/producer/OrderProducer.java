@@ -6,9 +6,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.ms.common.infrastructure.messaging.event.OrderCreatedEvent;
+import com.ms.common.infrastructure.messaging.event.OrderItemCreatedEvent;
 import com.ms.order.domain.model.Order;
-import com.ms.order.infrastructure.messaging.event.OrderCreatedEvent;
-import com.ms.order.infrastructure.messaging.event.OrderItemCreatedEvent;
 import com.ms.order.mapper.OrderItemCreatedEventMapper;
 
 @Component

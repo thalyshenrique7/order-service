@@ -5,6 +5,8 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ms.common.infrastructure.messaging.event.StockFailedEvent;
+import com.ms.common.infrastructure.messaging.event.StockReservedEvent;
 import com.ms.order.domain.model.Order;
 import com.ms.order.domain.repository.OrderRepository;
 import com.ms.order.dto.OrderRequestDTO;
@@ -55,6 +57,29 @@ public class OrderServiceImpl implements OrderService {
 				DESCRIPTION_ORDER_CREATED, Calendar.getInstance());
 
 		return orderResponse;
+	}
+
+	@Override
+	public void confirmOrder(StockReservedEvent stockReservedEvent) {
+
+		Order order = this.orderRepository.findById(stockReservedEvent.getOrderId())
+				.orElseThrow(() -> new RuntimeException("Ocorreu um erro ao tentar buscar o pedido."));
+
+		order.setStatus(OrderStatus.CONFIRMED);
+
+		this.orderRepository.save(order);
+	}
+
+	@Override
+	public void cancelOrder(StockFailedEvent stockFailedEvent) {
+
+		Order order = this.orderRepository.findById(stockFailedEvent.getOrderId())
+				.orElseThrow(() -> new RuntimeException("Ocorreu um erro ao tentar buscar o pedido."));
+
+		order.setStatus(OrderStatus.FAILED);
+
+		this.orderRepository.save(order);
+
 	}
 
 }

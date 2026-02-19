@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.ms.common.infrastructure.messaging.event.OrderItemCreatedEvent;
 import com.ms.order.domain.model.OrderItem;
-import com.ms.order.infrastructure.messaging.event.OrderItemCreatedEvent;
 
 @Component
 public class OrderItemCreatedEventMapper {
