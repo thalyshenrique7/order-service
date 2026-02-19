@@ -2,6 +2,8 @@ package com.ms.order.infrastructure.messaging.producer;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,8 @@ import com.ms.order.mapper.OrderItemCreatedEventMapper;
 
 @Component
 public class OrderProducer {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderProducer.class);
 
 	final RabbitTemplate rabbitTemplate;
 
@@ -32,12 +36,19 @@ public class OrderProducer {
 
 	public void publishOrderCreatedEvent(Order order) {
 
+		Long orderId = order.getId();
+
+		LOGGER.info("Publicando evento: order.created | exchange={} routingKey={} orderId={}", exchange, routingKey,
+				orderId);
+
 		OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent();
-		orderCreatedEvent.setOrderId(order.getId());
+		orderCreatedEvent.setOrderId(orderId);
 
 		List<OrderItemCreatedEvent> items = this.orderItemCreatedEventMapper.toOrderItemCreatedEvent(order.getItems());
 		orderCreatedEvent.setItems(items);
 
 		this.rabbitTemplate.convertAndSend(exchange, routingKey, orderCreatedEvent);
+
+		LOGGER.info("Evento publicado: order.created | orderId={}", orderId);
 	}
 }

@@ -2,6 +2,8 @@ package com.ms.order.service.impl;
 
 import java.util.Calendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import jakarta.transaction.Transactional;
 public class OrderServiceImpl implements OrderService {
 
 	private final static String DESCRIPTION_ORDER_CREATED = "Pedido criado e aguardando confirmação de estoque.";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 
 	@Autowired
 	private OrderRepository orderRepository;
@@ -62,24 +66,49 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public void confirmOrder(StockReservedEvent stockReservedEvent) {
 
-		Order order = this.orderRepository.findById(stockReservedEvent.getOrderId())
-				.orElseThrow(() -> new RuntimeException("Ocorreu um erro ao tentar buscar o pedido."));
+		Order order = null;
+
+		Long orderId = stockReservedEvent.getOrderId();
+
+		try {
+
+			order = this.orderRepository.getReferenceById(orderId);
+
+		} catch (Exception e) {
+
+			LOGGER.error("Falha ao processar evento stock.reserved | orderId={}", orderId, e);
+			throw e;
+		}
 
 		order.setStatus(OrderStatus.CONFIRMED);
 
 		this.orderRepository.save(order);
+
+		LOGGER.info("Pedido confirmado após reserva de estoque | orderId={}", orderId);
 	}
 
 	@Override
 	public void cancelOrder(StockFailedEvent stockFailedEvent) {
 
-		Order order = this.orderRepository.findById(stockFailedEvent.getOrderId())
-				.orElseThrow(() -> new RuntimeException("Ocorreu um erro ao tentar buscar o pedido."));
+		Order order = null;
 
-		order.setStatus(OrderStatus.FAILED);
+		Long orderId = stockFailedEvent.getOrderId();
+
+		try {
+
+			order = this.orderRepository.getReferenceById(orderId);
+
+		} catch (Exception e) {
+
+			LOGGER.error("Falha ao processar evento stock.failed | orderId={}", orderId, e);
+			throw e;
+		}
+
+		order.setStatus(OrderStatus.CANCELLED);
 
 		this.orderRepository.save(order);
 
+		LOGGER.info("Pedido cancelado por falha de estoque | orderId={}", orderId);
 	}
 
 }

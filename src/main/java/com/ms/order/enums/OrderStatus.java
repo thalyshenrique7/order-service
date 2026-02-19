@@ -2,5 +2,5 @@ package com.ms.order.enums;
 
 public enum OrderStatus {
 
-	PENDING_STOCK, CONFIRMED, CANCELLED, FAILED
+	PENDING_STOCK, CONFIRMED, CANCELLED
 }
